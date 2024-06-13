@@ -1,5 +1,11 @@
 # obsidian-dangling-links
 
+## Note
+
+This plugin is only lightly maintained, you might find
+[this alternative](https://github.com/ipshing/obsidian-broken-links) suits your
+needs better.
+
 ![Obsidian Dangling Links demo](assets/overview.gif?raw=true)
 
 This is a small plugin for [Obsidian](http://obsidian.md) that displays the set
