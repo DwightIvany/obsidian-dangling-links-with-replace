@@ -10,6 +10,7 @@ import { afterUpdate, onDestroy } from "svelte";
     export let navigationItems: DanglingNavigationItem[];
     export let sortableItems: Sortable[];
     export let redraw: () => void;
+    export let replaceAll: () => void;
     import { Config } from '../service/config'
 
     $: {}
@@ -66,6 +67,15 @@ import { afterUpdate, onDestroy } from "svelte";
     {/if} 
 </svg></span>
     {/each}
+    <span class="nav-action-button" on:click={() => replaceAll()} title="Replace"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 4a1 1 0 0 1 1-1" />
+    <path d="M15 10a1 1 0 0 1-1-1" />
+    <path d="M21 4a1 1 0 0 0-1-1" />
+    <path d="M21 9a1 1 0 0 1-1 1" />
+    <path d="m3 7 3 3 3-3" />
+    <path d="M6 10V5a2 2 0 0 1 2-2h2" />
+    <rect x="3" y="14" width="7" height="7" rx="1" />
+</svg></span>
 </div>
 
 <h3>Dangling links with replace</h3>

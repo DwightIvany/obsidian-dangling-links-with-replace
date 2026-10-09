@@ -1,5 +1,5 @@
 import Dangling from './Dangling.svelte';
-import { VIEW_TYPE_DANGLING_LINKS } from '../constants';
+import { NAVIGATION_TAB, VIEW_TYPE_DANGLING_LINKS } from '../constants';
 import type Dangle from '../model/dangle';
 import { ItemView, MarkdownView, TFile, WorkspaceLeaf } from 'obsidian';
 import { Config } from '../service/config';
@@ -64,6 +64,68 @@ export default class DanglingLinksView extends ItemView {
         }
     }
 
+    public async replaceAllDangles(): Promise<void> {
+        let settings = Config.getSettings();
+        let prefix = settings.replacePrefix;
+        let suffix = settings.replaceSuffix;
+        let linkItem = this.sortableItems.find(
+            (element) => element.tabIdentifier == NAVIGATION_TAB.LINK
+        );
+        let grouped = linkItem.getDanglingLinks();
+        let byPath: Map<string, Dangle[]> = new Map();
+        grouped.forEach((dangles) => {
+            dangles.forEach((dangle) => {
+                if (!byPath.has(dangle.path)) {
+                    byPath.set(dangle.path, []);
+                }
+                byPath.get(dangle.path).push(dangle);
+            });
+        });
+        for (let [path, dangles] of byPath) {
+            let file = this.app.vault.getAbstractFileByPath(path);
+            if (!(file instanceof TFile)) {
+                continue;
+            }
+            let content = await this.app.vault.read(file);
+            let lines = content.split('\n');
+            // Replace from the end of the line backwards so earlier
+            // replacements don't shift the position of later ones.
+            dangles.sort((a, b) =>
+                a.line == b.line ? b.col - a.col : b.line - a.line
+            );
+            let changed = false;
+            for (let dangle of dangles) {
+                let line = lines[dangle.line];
+                if (line == null) {
+                    continue;
+                }
+                let needle = '[[' + dangle.link;
+                let start = line.indexOf(needle, Math.max(0, dangle.col));
+                if (start == -1) {
+                    start = line.indexOf(needle);
+                }
+                if (start == -1) {
+                    continue;
+                }
+                let end = line.indexOf(']]', start + needle.length);
+                if (end == -1) {
+                    continue;
+                }
+                let inner = line.slice(start + 2, end);
+                lines[dangle.line] =
+                    line.slice(0, start) +
+                    prefix +
+                    inner +
+                    suffix +
+                    line.slice(end + 2);
+                changed = true;
+            }
+            if (changed) {
+                await this.app.vault.modify(file, lines.join('\n'));
+            }
+        }
+    }
+
     async onOpen(): Promise<void> {
         let dangling = this.getDangling();
         this.dangling = new Dangling({
@@ -71,6 +133,7 @@ export default class DanglingLinksView extends ItemView {
             props: {
                 visitDangle: this.visitDangle,
                 redraw: this.redraw,
+                replaceAll: () => this.replaceAllDangles(),
                 dangling,
                 sortableItems: this.sortableItems,
                 navigationItems: this.navigationItems,
