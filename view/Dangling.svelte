@@ -57,7 +57,7 @@ import { afterUpdate, onDestroy } from "svelte";
 </script>
 
 <div id="dangling-links-with-replace" class="container">
-<div class="nav-header">
+<div class="nav-header" style="display: flex; flex-direction: row; align-items: center;">
     {#each navigationItems as navigationItem}
     <span  class="nav-action-button" on:click={() => handleClick(navigationItem)} title="{navigationItem.title}"><svg viewBox="0 0 100 100" class="folder" width="20" height="20">
     {#if navigationItem.tabIdentifier == settings.selectedTab }

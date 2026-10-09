@@ -87,8 +87,9 @@ export default class DanglingSettingsTab extends PluginSettingTab {
             text: 'Replace',
         });
 
-        this.containerEl.createEl('h4', {
+        this.containerEl.createEl('div', {
             text: 'Settings to replace [[ ]] MarkDown with other character for Dangling Links.',
+            cls: 'setting-item-description',
         });
 
         new Setting(containerEl)
