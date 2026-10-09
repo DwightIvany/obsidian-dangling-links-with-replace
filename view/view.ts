@@ -37,7 +37,7 @@ export default class DanglingLinksView extends ItemView {
     }
 
     getDisplayText(): string {
-        return 'Dangling links';
+        return 'Dangling links with replace';
     }
 
     getIcon(): string {

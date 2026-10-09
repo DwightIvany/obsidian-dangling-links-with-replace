@@ -55,7 +55,7 @@ import { afterUpdate, onDestroy } from "svelte";
 
 </script>
 
-<div id="dangling-links" class="container">
+<div id="dangling-links-with-replace" class="container">
 <div class="nav-header">
     {#each navigationItems as navigationItem}
     <span  class="nav-action-button" on:click={() => handleClick(navigationItem)} title="{navigationItem.title}"><svg viewBox="0 0 100 100" class="folder" width="20" height="20">
@@ -68,7 +68,7 @@ import { afterUpdate, onDestroy } from "svelte";
     {/each}
 </div>
 
-<h3>Dangling links</h3>
+<h3>Dangling links with replace</h3>
 
 {#each dangling as [index, dangles], cnt}
 <details bind:this="{details[cnt]}" id="{index}" on:click={(event) => {expand(event, index) } }>

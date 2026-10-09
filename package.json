@@ -1,5 +1,5 @@
 {
-  "name": "obsidian-dangling-links",
+  "name": "obsidian-dangling-links-with-replace",
   "version": "0.3.0",
   "description": "This is a sample plugin for Obsidian (https://obsidian.md)",
   "main": "main.js",

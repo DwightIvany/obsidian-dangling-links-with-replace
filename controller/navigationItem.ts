@@ -93,7 +93,7 @@ export abstract class Sortable extends DanglingNavigationItem {
             } else {
                 var dangles = [dangle];
             }
-            // con.log(`adding ${dangles.length} dangling links for ${file.path}`);
+            // con.log(`adding ${dangles.length} dangling links with replace for ${file.path}`);
             danglingLinks.set(index, dangles);
         });
         return danglingLinks;

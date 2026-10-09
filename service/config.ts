@@ -5,7 +5,9 @@ export interface DanglingSettings {
     selectedTab: NAVIGATION_TAB;
     sortOrder: SORT_ORDER;
     reducedIndices: string[];
-    ignoredFolders: string[]
+    ignoredFolders: string[];
+    replacePrefix: string;
+    replaceSuffix: string;
 }
 export namespace Config {
     let plugin: Plugin;
@@ -15,7 +17,9 @@ export namespace Config {
         selectedTab: NAVIGATION_TAB.FILE,
         sortOrder: SORT_ORDER.ASC,
         reducedIndices: [],
-        ignoredFolders: []
+        ignoredFolders: [],
+        replacePrefix: '',
+        replaceSuffix: ''
     };
     export async function loadSettings(plugin: Plugin) {
         this.plugin = plugin;

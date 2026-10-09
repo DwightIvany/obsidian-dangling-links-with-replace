@@ -8,7 +8,7 @@ export default class DanglingFolderItem extends Sortable {
         super(
             ICONS.FOLDER_ICON,
             NAVIGATION_TAB.FOLDER,
-            'Group by folder containing notes with dangling links',
+            'Group by folder containing notes with dangling links with replace',
             app
         );
     }

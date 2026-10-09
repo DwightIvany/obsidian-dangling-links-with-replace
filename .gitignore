@@ -1,11 +1,36 @@
+# vscode
+.vscode
+
+# Intellij
+*.iml
+.idea
+
 # npm
 node_modules
 package-lock.json
 
-# build
+# Standalone/portable build tools (e.g. local Node.js runtime)
+tools/
+
+# Don't include the compiled main.js file in the repo.
+# They should be uploaded to GitHub releases instead.
 main.js
-*.js.map
+
+# Exclude sourcemaps
+*.map
+
+# TypeScript
+*.tsbuildinfo
 
 # obsidian
 data.json
+
+# Env files
+.env
+.env.*
+
+# Exclude macOS Finder (System Explorer) View States
 .DS_Store
+
+# windows
+desktop.ini

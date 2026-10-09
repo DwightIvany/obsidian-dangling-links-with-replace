@@ -82,6 +82,38 @@ export default class DanglingSettingsTab extends PluginSettingTab {
         setting.infoEl.remove();
 
         div.appendChild(containerEl.lastChild);
+
+        this.containerEl.createEl('h4', {
+            text: 'Replace',
+        });
+
+        new Setting(containerEl)
+            .setName('Replace Prefix')
+            .setDesc('Text to place before each dangling link when replacing it.')
+            .addText((text) =>
+                text
+                    .setPlaceholder('Prefix')
+                    .setValue(settings.replacePrefix)
+                    .onChange((newPrefix) => {
+                        settings.replacePrefix = newPrefix;
+                        Config.saveSettings();
+                        this.plugin.view.redraw();
+                    })
+            );
+
+        new Setting(containerEl)
+            .setName('Replace Suffix')
+            .setDesc('Text to place after each dangling link when replacing it.')
+            .addText((text) =>
+                text
+                    .setPlaceholder('Suffix')
+                    .setValue(settings.replaceSuffix)
+                    .onChange((newSuffix) => {
+                        settings.replaceSuffix = newSuffix;
+                        Config.saveSettings();
+                        this.plugin.view.redraw();
+                    })
+            );
     }
 }
 

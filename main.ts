@@ -20,12 +20,12 @@ export default class DanglingLinkPlugin extends Plugin {
             (leaf: WorkspaceLeaf) => (this.view = new DanglingLinksView(leaf))
         );
         this.addCommand({
-            id: 'show-dangling-links-view',
+            id: 'show-dangling-links-with-replace-view',
             name: 'Open view',
             callback: () => this.showPanel(),
         });
 
-        this.addRibbonIcon('broken-link', 'Show dangling links panel', (e) =>
+        this.addRibbonIcon('broken-link', 'Show dangling links with replace panel', (e) =>
             this.showPanel()
         );
         this.addSettingTab(new DanglingSettingsTab(this.app, this));

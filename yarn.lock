@@ -370,7 +370,7 @@
   "version" "3.0.0"
 
 "obsidian@https://github.com/obsidianmd/obsidian-api/tarball/master":
-  "integrity" "sha512-09/Zpb7sXE264OLk3DDbieU895d6NaNIIL8eyKR+5WpXPSYKeDfwy4yQh3WSb6KHWTJpbyvqUDchh8Yy4lHiRQ=="
+  "integrity" "sha512-B4lciXJ5JMDomCdeAH9k3SKEIbz2kEMxv14abEpmZPsNP/gHgKSl32VFW4uB2MRtWUwScTTBcBjoEv/vcquO9A=="
   "resolved" "https://github.com/obsidianmd/obsidian-api/tarball/master"
   "version" "0.12.2"
   dependencies:

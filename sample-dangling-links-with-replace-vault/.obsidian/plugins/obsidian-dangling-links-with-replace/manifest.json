@@ -1,0 +1,10 @@
+{
+    "id": "obsidian-dangling-links-with-replace",
+    "name": "Dangling links with replace",
+    "version": "0.3.0",
+    "minAppVersion": "0.9.15",
+    "description": "This plugin shows any dangling links with replace in your vault.",
+    "author": "Graydon Hoare",
+    "authorUrl": "https://github.com/graydon",
+    "isDesktopOnly": false
+}
