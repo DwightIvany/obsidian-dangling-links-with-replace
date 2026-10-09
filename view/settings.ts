@@ -87,9 +87,13 @@ export default class DanglingSettingsTab extends PluginSettingTab {
             text: 'Replace',
         });
 
+        this.containerEl.createEl('h4', {
+            text: 'Settings to replace [[ ]] MarkDown with other character for Dangling Links.',
+        });
+
         new Setting(containerEl)
             .setName('Replace Prefix')
-            .setDesc('Text to place before each dangling link when replacing it.')
+            .setDesc('Text to place before each dangling link when replacing [[ prefix.')
             .addText((text) =>
                 text
                     .setPlaceholder('Prefix')
@@ -103,7 +107,7 @@ export default class DanglingSettingsTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName('Replace Suffix')
-            .setDesc('Text to place after each dangling link when replacing it.')
+            .setDesc('Text to place after each dangling link when replacing ]] suffix.')
             .addText((text) =>
                 text
                     .setPlaceholder('Suffix')

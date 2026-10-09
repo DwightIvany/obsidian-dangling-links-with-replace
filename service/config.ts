@@ -18,8 +18,8 @@ export namespace Config {
         sortOrder: SORT_ORDER.ASC,
         reducedIndices: [],
         ignoredFolders: [],
-        replacePrefix: '',
-        replaceSuffix: ''
+        replacePrefix: '`',
+        replaceSuffix: '`'
     };
     export async function loadSettings(plugin: Plugin) {
         this.plugin = plugin;

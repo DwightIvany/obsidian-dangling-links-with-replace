@@ -124,6 +124,7 @@ export default class DanglingLinksView extends ItemView {
                 await this.app.vault.modify(file, lines.join('\n'));
             }
         }
+        await this.redraw();
     }
 
     async onOpen(): Promise<void> {

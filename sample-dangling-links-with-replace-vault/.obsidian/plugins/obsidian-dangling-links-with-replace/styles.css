@@ -17,3 +17,9 @@
 .templatedivr_div > .setting-item > .setting-item-control > .setting-editor-extra-setting-button {
     align-self: center;
 }
+
+#dangling-links-with-replace .nav-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
