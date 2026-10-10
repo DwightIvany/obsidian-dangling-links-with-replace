@@ -18,7 +18,7 @@ export default class DanglingLinkPlugin extends Plugin {
             (leaf: WorkspaceLeaf) => new DanglingLinksView(leaf)
         );
         this.addCommand({
-            id: 'show-dangling-links-with-replace-view',
+            id: 'open-view',
             name: 'Open view',
             callback: () => this.showPanel(),
         });
