@@ -19,6 +19,7 @@ export default class DanglingSettingsTab extends PluginSettingTab {
         const settings = Config.getSettings();
 
         this.containerEl.empty();
+        containerEl.addClass('dlwr-settings');
 
         new Setting(containerEl)
             .setName(
@@ -63,7 +64,7 @@ export default class DanglingSettingsTab extends PluginSettingTab {
         });
 
         const div = containerEl.createEl('div');
-        div.addClass('div');
+        div.addClass('dlwr-settings-footer');
 
         const setting = new Setting(containerEl).addButton((button) => {
             const b = button

@@ -26,6 +26,13 @@ their reference and you can click each occurrence to navigate to it.
 You are also able to collapse each item or ignore complete folders from the
 settings page.
 
+## Permissions
+
+This plugin enumerates the files in your vault (`vault.getMarkdownFiles`)
+to find dangling links, and reads a file only when you ask it to replace
+a link in it. Everything runs locally inside Obsidian — no file contents
+or paths are ever sent anywhere.
+
 ## Compatibility
 
 I've marked this as requiring obsidian v0.9.15 because that's what I have. If
