@@ -11,13 +11,11 @@ import DanglingLinksView from 'view/view';
 import { VIEW_TYPE_DANGLING_LINKS } from './constants';
 
 export default class DanglingLinkPlugin extends Plugin {
-    public view: DanglingLinksView;
-
     async onload() {
         await Config.loadSettings(this);
         this.registerView(
             VIEW_TYPE_DANGLING_LINKS,
-            (leaf: WorkspaceLeaf) => (this.view = new DanglingLinksView(leaf))
+            (leaf: WorkspaceLeaf) => new DanglingLinksView(leaf)
         );
         this.addCommand({
             id: 'show-dangling-links-with-replace-view',
@@ -35,6 +33,15 @@ export default class DanglingLinkPlugin extends Plugin {
         this.app.workspace
             .getRightLeaf(true)
             .setViewState({ type: VIEW_TYPE_DANGLING_LINKS });
+    }
+
+    getView(): DanglingLinksView | null {
+        const leaves = this.app.workspace.getLeavesOfType(
+            VIEW_TYPE_DANGLING_LINKS
+        );
+        return leaves.length > 0
+            ? (leaves[0].view as DanglingLinksView)
+            : null;
     }
 
     onunload() {
