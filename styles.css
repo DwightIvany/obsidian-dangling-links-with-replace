@@ -1,21 +1,3 @@
-/* Settings tab. .dlwr-settings is added to the settings container in
-   view/settings.ts so these rules never leak outside this plugin. */
-.dlwr-settings .settings-div > .setting-item {
-    align-content: center;
-    justify-content: center;
-}
-
-.vertical-tab-content .dlwr-settings .dlwr-settings-footer > .setting-item {
-    border-top: none;
-    align-self: center;
-}
-
-.dlwr-settings .dlwr-settings-footer > .setting-item > .setting-item-control {
-    justify-content: space-around;
-    padding: 0;
-    width: 100%;
-}
-
 /* Dangling links panel */
 #dangling-links-with-replace .nav-header {
     display: flex;
