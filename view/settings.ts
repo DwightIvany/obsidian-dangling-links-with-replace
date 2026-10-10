@@ -20,8 +20,6 @@ export default class DanglingSettingsTab extends PluginSettingTab {
 
         this.containerEl.empty();
 
-        new Setting(containerEl).setName('Settings').setHeading();
-
         new Setting(containerEl)
             .setName(
                 'You can ignore folders (and their subfolders) with entries you add here.'
