@@ -24,11 +24,13 @@ For typos review the list of Dangling links, click and correct.
 For Deleted files (and folders), I often like to change [[dangling-link]] to `dangling-link` 
 I find this syntax is a useful MarkDown way to reference files that no longer exist.
 
-For Files yet to be created, select a template file in the "Create files by
-template" section of the settings, then click the Create Files button in the
-side panel. One file is created per dangling link, in the same folder as the
-file containing the link, named after the missing link and filled with the
-template content. Files that already exist are skipped.
+For Files yet to be created, add one or more template files in the
+"Create files by template" section of the settings, then click the Create
+Files button in the side panel. One file is created per dangling link, in
+the same folder as the file containing the link, named after the missing
+link and filled with the template content. When several templates are
+saved you are prompted to pick which one to use; with none saved, files
+are created empty. Files that already exist are skipped.
 
 ![Obsidian Dangling Links with replace demo](assets/overview.gif?raw=true)
 

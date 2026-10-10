@@ -4,6 +4,7 @@ import {
     App,
     FuzzySuggestModal,
     PluginSettingTab,
+    TFile,
     TFolder,
     type SettingDefinitionItem,
 } from 'obsidian';
@@ -85,19 +86,47 @@ export default class DanglingSettingsTab extends PluginSettingTab {
                 heading: 'Create files by template',
                 items: [
                     {
-                        name: 'Template file',
-                        desc: 'Template used for the content of each created file.',
-                        control: {
-                            type: 'file',
-                            key: 'templateFile',
-                            placeholder: 'Template file',
-                        },
-                    },
-                    {
-                        name: 'Create files using template in same folder as the Dangling Links',
+                        name: 'Create files using a template in same folder as the Dangling Links',
                         searchable: false,
                     },
                 ],
+            },
+            {
+                type: 'list',
+                heading: 'Template files',
+                emptyState:
+                    'No templates selected. Created files will be empty.',
+                addItem: {
+                    name: 'Add template',
+                    action: () => {
+                        new FilePickerModal(this.app, (file) => {
+                            settings.templateFiles.push(file.path);
+                            this.persist(true);
+                        }).open();
+                    },
+                },
+                onReorder: (oldIndex: number, newIndex: number) => {
+                    const [moved] = settings.templateFiles.splice(
+                        oldIndex,
+                        1
+                    );
+                    settings.templateFiles.splice(newIndex, 0, moved);
+                    this.persist(false);
+                },
+                onDelete: (index) => {
+                    settings.templateFiles.splice(index, 1);
+                    this.persist(true);
+                },
+                items: settings.templateFiles.map((file) => ({
+                    name: file || '(no file selected)',
+                    searchable: false,
+                    action: (el: HTMLElement, index: number) => {
+                        new FilePickerModal(this.app, (picked) => {
+                            settings.templateFiles[index] = picked.path;
+                            this.persist(true);
+                        }).open();
+                    },
+                })),
             },
         ];
     }
@@ -126,6 +155,28 @@ export default class DanglingSettingsTab extends PluginSettingTab {
         if (rebuild) {
             this.update();
         }
+    }
+}
+
+class FilePickerModal extends FuzzySuggestModal<TFile> {
+    private readonly onPick: (file: TFile) => void;
+
+    constructor(app: App, onPick: (file: TFile) => void) {
+        super(app);
+        this.onPick = onPick;
+        this.setPlaceholder('Select a template file');
+    }
+
+    getItems(): TFile[] {
+        return this.app.vault.getMarkdownFiles();
+    }
+
+    getItemText(file: TFile): string {
+        return file.path;
+    }
+
+    onChooseItem(file: TFile): void {
+        this.onPick(file);
     }
 }
 
