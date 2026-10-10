@@ -50,5 +50,8 @@ Files** creates a note for every dangling link from your selected template.
 
 This plugin enumerates the files in your vault (`vault.getMarkdownFiles`)
 to find dangling links, and reads a file only when you ask it to replace
-a link in it. Everything runs locally inside Obsidian — no file contents
-or paths are ever sent anywhere.
+a link in it or create a file from your selected template. The folder
+picker in the settings tab enumerates the vault's loaded files and folders
+(`getAllLoadedFiles`) solely to suggest folders as you type. Everything
+runs locally inside Obsidian — no file contents or paths are ever sent
+anywhere.
