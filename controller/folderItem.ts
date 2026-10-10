@@ -16,7 +16,7 @@ export default class DanglingFolderItem extends Sortable {
     getDanglingLinks(): Map<string, Dangle[]> {
         let danglingLinks: Map<string, Dangle[]> = this._getDanglingLinks(
             (dangle: Dangle) =>
-                dangle.path.substr(0, dangle.path.lastIndexOf('/'))
+                dangle.path.substring(0, dangle.path.lastIndexOf('/'))
         );
         return danglingLinks;
     }

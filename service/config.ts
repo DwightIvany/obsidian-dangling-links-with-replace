@@ -9,24 +9,26 @@ export interface DanglingSettings {
     replacePrefix: string;
     replaceSuffix: string;
 }
-export namespace Config {
-    let plugin: Plugin;
-    let settings: DanglingSettings;
 
-    const DEFAULT_SETTINGS : DanglingSettings = {
-        selectedTab: NAVIGATION_TAB.FILE,
-        sortOrder: SORT_ORDER.ASC,
-        reducedIndices: [],
-        ignoredFolders: [],
-        replacePrefix: '`',
-        replaceSuffix: '`'
-    };
-    export async function loadSettings(loadedPlugin: Plugin) {
-        plugin = loadedPlugin;
-        const loaded = (await loadedPlugin.loadData()) as Partial<DanglingSettings>;
-        settings = Object.assign({}, DEFAULT_SETTINGS, loaded);
-    }
+let plugin: Plugin;
+let settings: DanglingSettings;
 
-    export function getSettings(): DanglingSettings { return settings; }
-    export function saveSettings(): void { void plugin.saveData(settings); }
+const DEFAULT_SETTINGS : DanglingSettings = {
+    selectedTab: NAVIGATION_TAB.FILE,
+    sortOrder: SORT_ORDER.ASC,
+    reducedIndices: [],
+    ignoredFolders: [],
+    replacePrefix: '`',
+    replaceSuffix: '`'
+};
+
+async function loadSettings(loadedPlugin: Plugin): Promise<void> {
+    plugin = loadedPlugin;
+    const loaded = (await loadedPlugin.loadData()) as Partial<DanglingSettings>;
+    settings = Object.assign({}, DEFAULT_SETTINGS, loaded);
 }
+
+function getSettings(): DanglingSettings { return settings; }
+function saveSettings(): void { void plugin.saveData(settings); }
+
+export const Config = { loadSettings, getSettings, saveSettings };

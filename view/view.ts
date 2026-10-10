@@ -15,10 +15,23 @@ export default class DanglingLinksView extends ItemView {
     private navigationItems: DanglingNavigationItem[];
     private sortableItems: Sortable[];
 
+    // Arrow-function properties so callbacks passed to events and Svelte
+    // props keep the right `this` without .bind() bookkeeping.
+    public visitDangle = (dangle: Dangle): void => {
+        let file = this.app.vault.getAbstractFileByPath(dangle.path);
+        if (file instanceof TFile) {
+            let leaf = this.app.workspace.getLeaf(false);
+            void leaf.openFile(file).then(() => {
+                if (leaf.view instanceof MarkdownView) {
+                    this.app.workspace.setActiveLeaf(leaf, { focus: true });
+                    leaf.view.editor.setCursor(dangle.line, dangle.col);
+                }
+            });
+        }
+    };
+
     constructor(leaf: WorkspaceLeaf) {
         super(leaf);
-        this.redraw = this.redraw.bind(this);
-        this.visitDangle = this.visitDangle.bind(this);
         this.registerEvent(this.app.metadataCache.on('resolved', this.redraw));
         this.registerEvent(this.app.metadataCache.on('changed', this.redraw));
         this.sortableItems = [
@@ -49,19 +62,6 @@ export default class DanglingLinksView extends ItemView {
             this.dangling.$destroy();
         }
         return Promise.resolve();
-    }
-
-    visitDangle(dangle: Dangle) {
-        let file = this.app.vault.getAbstractFileByPath(dangle.path);
-        if (file instanceof TFile) {
-            let leaf: WorkspaceLeaf = this.app.workspace.getUnpinnedLeaf();
-            void leaf.openFile(file).then(() => {
-                if (leaf.view instanceof MarkdownView) {
-                    this.app.workspace.setActiveLeaf(leaf, true, true);
-                    leaf.view.editor.setCursor(dangle.line, dangle.col);
-                }
-            });
-        }
     }
 
     public async replaceAllDangles(): Promise<void> {
@@ -130,7 +130,7 @@ export default class DanglingLinksView extends ItemView {
     async onOpen(): Promise<void> {
         let dangling = this.getDangling();
         this.dangling = new Dangling({
-            target: (this as any).contentEl,
+            target: this.contentEl,
             props: {
                 visitDangle: this.visitDangle,
                 redraw: this.redraw,
@@ -142,10 +142,10 @@ export default class DanglingLinksView extends ItemView {
         });
     }
 
-    public async redraw(): Promise<void> {
+    public redraw = async (): Promise<void> => {
         let dangling = this.getDangling();
         this.dangling?.$set({ dangling });
-    }
+    };
 
     private getDangling(): [string, Dangle[]][] {
         let settings = Config.getSettings();

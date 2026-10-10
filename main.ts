@@ -1,10 +1,4 @@
-import {
-    Plugin,
-    PluginSettingTab,
-    Setting,
-    View,
-    WorkspaceLeaf,
-} from 'obsidian';
+import { Plugin, WorkspaceLeaf } from 'obsidian';
 import { Config } from 'service/config';
 import DanglingSettingsTab from 'view/settings';
 import DanglingLinksView from 'view/view';
