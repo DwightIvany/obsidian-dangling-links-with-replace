@@ -10,6 +10,8 @@ Dangling links may be typos, links to deleted files, or they may be links
 you intended to make a note. Either way, it can be nice to have a list of them  
 to work with.
 
+![Obsidian Dangling Links with replace demo](assets/overview.gif?raw=true)
+
 This plugin is a fork of the now lightly maintained Dangling Links by Graydon Hoare.  
 Having used the plugin for years, I (Dwight Ivany) wanted to add features to  
 provide fixes to common use cases.
@@ -31,8 +33,6 @@ the same folder as the file containing the link, named after the missing
 link and filled with the template content. When several templates are
 saved you are prompted to pick which one to use; with none saved, files
 are created empty. Files that already exist are skipped.
-
-![Obsidian Dangling Links with replace demo](assets/overview.gif?raw=true)
 
 ## Usage
 
