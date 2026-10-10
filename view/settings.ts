@@ -80,6 +80,25 @@ export default class DanglingSettingsTab extends PluginSettingTab {
                     },
                 ],
             },
+            {
+                type: 'group',
+                heading: 'Create files by template',
+                items: [
+                    {
+                        name: 'Template file',
+                        desc: 'Template used for the content of each created file.',
+                        control: {
+                            type: 'file',
+                            key: 'templateFile',
+                            placeholder: 'Template file',
+                        },
+                    },
+                    {
+                        name: 'Create files using template in same folder as the Dangling Links',
+                        searchable: false,
+                    },
+                ],
+            },
         ];
     }
 

@@ -1,7 +1,7 @@
 import Dangling from './Dangling.svelte';
 import { NAVIGATION_TAB, VIEW_TYPE_DANGLING_LINKS } from '../constants';
 import type Dangle from '../model/dangle';
-import { ItemView, MarkdownView, TFile, WorkspaceLeaf } from 'obsidian';
+import { ItemView, MarkdownView, Notice, TFile, WorkspaceLeaf } from 'obsidian';
 import { Config } from '../service/config';
 import type DanglingNavigationItem from 'controller/navigationItem';
 import type { Sortable } from 'controller/navigationItem';
@@ -127,6 +127,68 @@ export default class DanglingLinksView extends ItemView {
         await this.redraw();
     }
 
+    // Create one file per dangling link, in the folder of the file that
+    // contains the link, filled with the template selected in settings.
+    // Existing files and duplicate link targets are skipped.
+    public async createFilesFromTemplate(): Promise<void> {
+        let settings = Config.getSettings();
+        let templatePath = settings.templateFile;
+        if (!templatePath) {
+            new Notice('Select a template file in the plugin settings first.');
+            return;
+        }
+        let templateFile = this.app.vault.getAbstractFileByPath(templatePath);
+        if (!(templateFile instanceof TFile)) {
+            new Notice('Template file not found: ' + templatePath);
+            return;
+        }
+        let content = await this.app.vault.read(templateFile);
+
+        let linkItem = this.sortableItems.find(
+            (element) => element.tabIdentifier == NAVIGATION_TAB.LINK
+        );
+        let grouped = linkItem.getDanglingLinks();
+        let targets: string[] = [];
+        let seen = new Set<string>();
+        grouped.forEach((dangles) => {
+            dangles.forEach((dangle) => {
+                let slash = dangle.path.lastIndexOf('/');
+                let folder =
+                    slash == -1 ? '' : dangle.path.substring(0, slash);
+                let targetPath = folder
+                    ? folder + '/' + dangle.link + '.md'
+                    : dangle.link + '.md';
+                if (seen.has(targetPath)) {
+                    return;
+                }
+                seen.add(targetPath);
+                if (this.app.vault.getAbstractFileByPath(targetPath)) {
+                    return;
+                }
+                targets.push(targetPath);
+            });
+        });
+
+        let created = 0;
+        let failures: string[] = [];
+        for (let targetPath of targets) {
+            try {
+                await this.app.vault.create(targetPath, content);
+                created++;
+            } catch (error) {
+                failures.push(targetPath);
+            }
+        }
+        if (failures.length > 0) {
+            new Notice(
+                `Created ${created} file(s) from template; could not create: ${failures.join(', ')}`
+            );
+        } else {
+            new Notice(`Created ${created} file(s) from template.`);
+        }
+        await this.redraw();
+    }
+
     async onOpen(): Promise<void> {
         let dangling = this.getDangling();
         this.dangling = new Dangling({
@@ -135,6 +197,7 @@ export default class DanglingLinksView extends ItemView {
                 visitDangle: this.visitDangle,
                 redraw: this.redraw,
                 replaceAll: () => this.replaceAllDangles(),
+                createAll: () => this.createFilesFromTemplate(),
                 dangling,
                 sortableItems: this.sortableItems,
                 navigationItems: this.navigationItems,
