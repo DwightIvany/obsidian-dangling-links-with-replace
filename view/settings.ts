@@ -44,7 +44,7 @@ export default class DanglingSettingsTab extends PluginSettingTab {
                             );
                             // Force refresh
                             Config.saveSettings();
-                            this.plugin.view.redraw();
+                            this.plugin.getView()?.redraw();
                             this.display();
                         });
                 })
@@ -55,7 +55,7 @@ export default class DanglingSettingsTab extends PluginSettingTab {
                         .onChange((newFolder) => {
                             settings.ignoredFolders[index] = newFolder;
                             Config.saveSettings();
-                            this.plugin.view.redraw();
+                            this.plugin.getView()?.redraw();
                         });
                     new FolderSuggest(this.app, text.inputEl);
                     t.inputEl.addClass('templater_template');
@@ -102,7 +102,7 @@ export default class DanglingSettingsTab extends PluginSettingTab {
                     .onChange((newPrefix) => {
                         settings.replacePrefix = newPrefix;
                         Config.saveSettings();
-                        this.plugin.view.redraw();
+                        this.plugin.getView()?.redraw();
                     })
             );
 
@@ -116,7 +116,7 @@ export default class DanglingSettingsTab extends PluginSettingTab {
                     .onChange((newSuffix) => {
                         settings.replaceSuffix = newSuffix;
                         Config.saveSettings();
-                        this.plugin.view.redraw();
+                        this.plugin.getView()?.redraw();
                     })
             );
     }
