@@ -188,7 +188,7 @@ export default class DanglingLinksView extends ItemView {
             try {
                 await this.app.vault.create(targetPath, content);
                 created++;
-            } catch (error) {
+            } catch {
                 failures.push(targetPath);
             }
         }
