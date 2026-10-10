@@ -1,7 +1,7 @@
 {
     "id": "dangling-links-with-replace",
     "name": "Dangling links with replace",
-    "version": "0.4.6",
+    "version": "0.5.0",
     "minAppVersion": "1.13.0",
     "description": "Shows dangling links in your vault and replaces them with your chosen prefix and suffix.",
     "author": "Graydon Hoare and Dwight Ivany",
