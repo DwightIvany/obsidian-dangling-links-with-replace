@@ -20,13 +20,13 @@ export default class DanglingSettingsTab extends PluginSettingTab {
 
         this.containerEl.empty();
 
-        this.containerEl.createEl('h2', {
-            text: 'Settings',
-        });
+        new Setting(containerEl).setName('Settings').setHeading();
 
-        this.containerEl.createEl('h4', {
-            text: 'You can ignore folders (and their subfolders) with entries you add here.',
-        });
+        new Setting(containerEl)
+            .setName(
+                'You can ignore folders (and their subfolders) with entries you add here.'
+            )
+            .setHeading();
 
         settings.ignoredFolders.forEach((folder, index) => {
             const div = containerEl.createEl('div');
@@ -83,9 +83,7 @@ export default class DanglingSettingsTab extends PluginSettingTab {
 
         div.appendChild(containerEl.lastChild);
 
-        this.containerEl.createEl('h4', {
-            text: 'Replace',
-        });
+        new Setting(containerEl).setName('Replace').setHeading();
 
         this.containerEl.createEl('div', {
             text: 'Settings to replace [[ ]] MarkDown with other character for Dangling Links.',
