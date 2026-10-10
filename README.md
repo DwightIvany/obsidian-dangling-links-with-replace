@@ -2,19 +2,32 @@
 
 ## Note
 
-This plugin is only lightly maintained, you might find
-[this alternative](https://github.com/ipshing/obsidian-broken-links) suits your
-needs better.
+This is a small plugin for [Obsidian](http://obsidian.md) that displays the set  
+of dangling links with replace in your current vault in a side-panel -- links you've  
+put in a note somewhere that don't currently point to anything in the vault.
+
+Dangling links may be typos, links to deleted files, or they may be links    
+you intended to make a note. Either way, it can be nice to have a list of them  
+to work with.
+
+This plugin is a fork of the now lightly maintained Dangling Links by Graydon Hoare.  
+Having used the plugin for years, I (Dwight Ivany) wanted to add features to  
+provide fixes to common use cases.
+
+Common Use Cases
+- Typos
+- Deleted files
+- Files yet to be created
+
+For typos review the list of Dangling links, click and correct.
+
+For Deleted files (and folders), I often like to change [[dangling-link]] to `dangling-link` 
+I find this syntax is a useful MarkDown way to reference files that no longer exist.
+
+Eventually this plugin should also have a feature to create by template files  
+for the dangling links.
 
 ![Obsidian Dangling Links with replace demo](assets/overview.gif?raw=true)
-
-This is a small plugin for [Obsidian](http://obsidian.md) that displays the set
-of dangling links with replace in your current vault in a side-panel -- links you've put in
-a note somewhere that don't currently point to anything in the vault.
-
-Dangling links with replace may be typos or they may be links you intended to make a note for
-but forgot to get to. Either way, it can be nice to have a list of them to work
-with.
 
 ## Usage
 
@@ -35,7 +48,7 @@ or paths are ever sent anywhere.
 
 ## Compatibility
 
-I've marked this as requiring obsidian v0.9.15 because that's what I have. If
-you get it working on an earlier one, I'm happy to reduce that number. I don't
+I've marked this as requiring obsidian v1.0.0 because it once worked on it. If
+you get it working on an earlier one, I'm happy to change that number. I don't
 have a lot of time to spend testing versions though and I don't see a big reason
 to stick with old versions.
