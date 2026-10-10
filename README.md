@@ -24,8 +24,11 @@ For typos review the list of Dangling links, click and correct.
 For Deleted files (and folders), I often like to change [[dangling-link]] to `dangling-link` 
 I find this syntax is a useful MarkDown way to reference files that no longer exist.
 
-Eventually this plugin should also have a feature to create by template files  
-for the dangling links.
+For Files yet to be created, select a template file in the "Create files by
+template" section of the settings, then click the Create Files button in the
+side panel. One file is created per dangling link, in the same folder as the
+file containing the link, named after the missing link and filled with the
+template content. Files that already exist are skipped.
 
 ![Obsidian Dangling Links with replace demo](assets/overview.gif?raw=true)
 
@@ -38,6 +41,10 @@ their reference and you can click each occurrence to navigate to it.
 
 You are also able to collapse each item or ignore complete folders from the
 settings page.
+
+The side-panel header has two action buttons: **Replace** wraps every dangling
+link in your chosen prefix and suffix (for example backticks), and **Create
+Files** creates a note for every dangling link from your selected template.
 
 ## Permissions
 

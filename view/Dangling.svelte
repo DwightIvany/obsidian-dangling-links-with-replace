@@ -11,6 +11,7 @@ import { afterUpdate, onDestroy } from "svelte";
     export let sortableItems: Sortable[];
     export let redraw: () => void;
     export let replaceAll: () => void;
+    export let createAll: () => void;
     import { Config } from '../service/config'
 
     $: {}
@@ -75,6 +76,10 @@ import { afterUpdate, onDestroy } from "svelte";
     <path d="m3 7 3 3 3-3" />
     <path d="M6 10V5a2 2 0 0 1 2-2h2" />
     <rect x="3" y="14" width="7" height="7" rx="1" />
+</svg></span>
+    <span class="nav-action-button" on:click={() => createAll()} title="Create Files"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 12h14" />
+    <path d="M12 5v14" />
 </svg></span>
 </div>
 

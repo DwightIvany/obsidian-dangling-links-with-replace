@@ -8,6 +8,7 @@ export interface DanglingSettings {
     ignoredFolders: string[];
     replacePrefix: string;
     replaceSuffix: string;
+    templateFile: string;
 }
 
 let plugin: Plugin;
@@ -19,7 +20,8 @@ const DEFAULT_SETTINGS : DanglingSettings = {
     reducedIndices: [],
     ignoredFolders: [],
     replacePrefix: '`',
-    replaceSuffix: '`'
+    replaceSuffix: '`',
+    templateFile: ''
 };
 
 async function loadSettings(loadedPlugin: Plugin): Promise<void> {
