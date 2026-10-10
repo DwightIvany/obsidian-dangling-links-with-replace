@@ -15,16 +15,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Node 24 (npm 11+) is required: it reads the committed yarn.lock and
-      # installs the pinned 2021-era toolchain. Newer-resolved deps break
-      # @rollup/plugin-typescript 6.
+      # Node 24 (npm 11+) is required: npm ci installs the exact tree pinned
+      # in the committed package-lock.json (2021-era toolchain). Newer-
+      # resolved deps break @rollup/plugin-typescript 6.
       - uses: actions/setup-node@v4
         with:
           node-version: "24.x"
           cache: npm
 
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
 
       - name: Build plugin
         run: npm run build

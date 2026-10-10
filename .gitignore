@@ -7,7 +7,6 @@
 
 # npm
 node_modules
-package-lock.json
 
 # Standalone/portable build tools (e.g. local Node.js runtime)
 tools/
