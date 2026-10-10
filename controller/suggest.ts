@@ -1,6 +1,17 @@
 import { App, ISuggestOwner, Scope } from 'obsidian';
 import { createPopper, Instance as PopperInstance } from '@popperjs/core';
 
+// Obsidian's public typings don't expose `dom` or `keymap` on App. Describe
+// the small internal surface this suggester relies on and cast through it,
+// rather than using `any`.
+interface AppInternal {
+    dom: { appContainerEl: HTMLElement };
+    keymap: {
+        pushScope(scope: Scope): void;
+        popScope(scope: Scope): void;
+    };
+}
+
 const wrapAround = (value: number, size: number): number => {
     return ((value % size) + size) % size;
 };
@@ -116,6 +127,10 @@ export abstract class TextInputSuggest<T> implements ISuggestOwner<T> {
     private suggestEl: HTMLElement;
     private suggest: Suggest<T>;
 
+    private get appInternal(): AppInternal {
+        return this.app as unknown as AppInternal;
+    }
+
     constructor(app: App, inputEl: HTMLInputElement) {
         this.app = app;
         this.inputEl = inputEl;
@@ -145,14 +160,12 @@ export abstract class TextInputSuggest<T> implements ISuggestOwner<T> {
 
         if (suggestions.length > 0) {
             this.suggest.setSuggestions(suggestions);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any -- reaches internal Obsidian APIs (dom/keymap) missing from the public typings
-            this.open((<any>this.app).dom.appContainerEl, this.inputEl);
+            this.open(this.appInternal.dom.appContainerEl, this.inputEl);
         }
     }
 
     open(container: HTMLElement, inputEl: HTMLElement): void {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- reaches internal Obsidian APIs (dom/keymap) missing from the public typings
-        (<any>this.app).keymap.pushScope(this.scope);
+        this.appInternal.keymap.pushScope(this.scope);
 
         container.appendChild(this.suggestEl);
         this.popper = createPopper(inputEl, this.suggestEl, {
@@ -181,8 +194,7 @@ export abstract class TextInputSuggest<T> implements ISuggestOwner<T> {
     }
 
     close(): void {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- reaches internal Obsidian APIs (dom/keymap) missing from the public typings
-        (<any>this.app).keymap.popScope(this.scope);
+        this.appInternal.keymap.popScope(this.scope);
 
         this.suggest.setSuggestions([]);
         this.popper.destroy();
