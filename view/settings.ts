@@ -1,11 +1,9 @@
 import { Config } from 'service/config';
 import type DanglingLinkPlugin from 'main';
 import {
-    AbstractInputSuggest,
     App,
+    FuzzySuggestModal,
     PluginSettingTab,
-    Setting,
-    TAbstractFile,
     TFolder,
     type SettingDefinitionItem,
 } from 'obsidian';
@@ -15,9 +13,6 @@ export default class DanglingSettingsTab extends PluginSettingTab {
         super(app, plugin);
     }
 
-    // Declarative settings (Obsidian 1.13+): Obsidian renders the tab from
-    // these definitions and indexes them for settings search. On older
-    // versions it calls display() instead, which renders imperatively below.
     getSettingDefinitions(): SettingDefinitionItem[] {
         const settings = Config.getSettings();
         return [
@@ -29,24 +24,32 @@ export default class DanglingSettingsTab extends PluginSettingTab {
                 addItem: {
                     name: 'Ignore another folder',
                     action: () => {
-                        settings.ignoredFolders.push('');
-                        Config.saveSettings();
-                        this.update();
+                        new FolderPickerModal(this.app, (folder) => {
+                            settings.ignoredFolders.push(folder.path);
+                            this.persist(true);
+                        }).open();
                     },
+                },
+                onReorder: (oldIndex: number, newIndex: number) => {
+                    const [moved] = settings.ignoredFolders.splice(
+                        oldIndex,
+                        1
+                    );
+                    settings.ignoredFolders.splice(newIndex, 0, moved);
+                    this.persist(false);
                 },
                 onDelete: (index) => {
                     settings.ignoredFolders.splice(index, 1);
-                    Config.saveSettings();
-                    void this.plugin.getView()?.redraw();
-                    this.update();
+                    this.persist(true);
                 },
-                items: settings.ignoredFolders.map((folder, index) => ({
-                    name: folder || `Ignored folder #${index + 1}`,
+                items: settings.ignoredFolders.map((folder) => ({
+                    name: folder || '(no folder selected)',
                     searchable: false,
-                    control: {
-                        type: 'folder',
-                        key: `ignoredFolders.${index}`,
-                        placeholder: 'Folder name',
+                    action: (el: HTMLElement, index: number) => {
+                        new FolderPickerModal(this.app, (picked) => {
+                            settings.ignoredFolders[index] = picked.path;
+                            this.persist(true);
+                        }).open();
                     },
                 })),
             },
@@ -77,185 +80,59 @@ export default class DanglingSettingsTab extends PluginSettingTab {
                     },
                 ],
             },
-            {
-                name: 'Replace [[link]] with other characters for all Dangling Links',
-                desc: 'Settings to replace [[ ]] MarkDown with other character for Dangling Links.',
-                searchable: false,
-            },
         ];
     }
 
-    // Back the declarative controls above with Config storage instead of
-    // the default `plugin.settings` object this plugin does not use. List
-    // rows bind their text control to an `ignoredFolders.<index>` key.
+    // Back the declarative text controls above with Config storage instead
+    // of the default `plugin.settings` object this plugin does not use.
     getControlValue(key: string): unknown {
-        const listKey = /^ignoredFolders\.(\d+)$/.exec(key);
-        if (listKey) {
-            return Config.getSettings().ignoredFolders[Number(listKey[1])];
-        }
         return (Config.getSettings() as unknown as Record<string, unknown>)[
             key
         ];
     }
 
     setControlValue(key: string, value: unknown): void {
-        const settings = Config.getSettings();
-        const listKey = /^ignoredFolders\.(\d+)$/.exec(key);
-        if (listKey) {
-            settings.ignoredFolders[Number(listKey[1])] = String(value);
-        } else {
-            (settings as unknown as Record<string, unknown>)[key] = value;
-        }
+        (Config.getSettings() as unknown as Record<string, unknown>)[key] =
+            value;
         Config.saveSettings();
         void this.plugin.getView()?.redraw();
     }
 
-    display(): void {
-        this.renderImperative();
-    }
-
-    // Imperative rendering, kept as the fallback for Obsidian versions
-    // without the declarative settings API (pre-1.13).
-    private renderImperative(): void {
-        let { containerEl } = this;
-        const settings = Config.getSettings();
-
-        this.containerEl.empty();
-        containerEl.addClass('dlwr-settings');
-
-        new Setting(containerEl)
-            .setName(
-                'You can ignore folders (and their subfolders) with entries you add here.'
-            )
-            .setHeading();
-
-        settings.ignoredFolders.forEach((folder, index) => {
-            const div = containerEl.createDiv();
-            div.addClass('settings-div');
-
-            new Setting(containerEl)
-                .setDesc(`Ignored Folder #${index + 1}`)
-                .addExtraButton((extra) => {
-                    extra
-                        .setIcon('cross')
-                        .setTooltip('Delete')
-                        .onClick(() => {
-                            settings.ignoredFolders.remove(
-                                settings.ignoredFolders[index]
-                            );
-                            // Force refresh
-                            Config.saveSettings();
-                            void this.plugin.getView()?.redraw();
-                            this.renderImperative();
-                        });
-                })
-                .addText((text) => {
-                    const t = text
-                        .setPlaceholder('Folder name')
-                        .setValue(folder)
-                        .onChange((newFolder) => {
-                            settings.ignoredFolders[index] = newFolder;
-                            Config.saveSettings();
-                            void this.plugin.getView()?.redraw();
-                        });
-                    new FolderSuggest(this.app, text.inputEl);
-                    t.inputEl.addClass('templater_template');
-
-                    return t;
-                });
-        });
-
-        const div = containerEl.createDiv();
-        div.addClass('dlwr-settings-footer');
-
-        const setting = new Setting(containerEl).addButton((button) => {
-            const b = button
-                .setButtonText('Ignore another folder')
-                .onClick(() => {
-                    settings.ignoredFolders.push('');
-                    // Force refresh
-                    this.renderImperative();
-                });
-            b.buttonEl.addClass('templater_button');
-
-            return b;
-        });
-        setting.infoEl.remove();
-
-        div.appendChild(containerEl.lastChild);
-
-        new Setting(containerEl)
-            .setName(
-                'Replace [[link]] with other characters for all Dangling Links'
-            )
-            .setHeading();
-
-        this.containerEl.createDiv({
-            text: 'Settings to replace [[ ]] MarkDown with other character for Dangling Links.',
-            cls: 'setting-item-description',
-        });
-
-        new Setting(containerEl)
-            .setName('Replace Prefix')
-            .setDesc('Text to place before each dangling link when replacing [[ prefix.')
-            .addText((text) =>
-                text
-                    .setPlaceholder('Prefix')
-                    .setValue(settings.replacePrefix)
-                    .onChange((newPrefix) => {
-                        settings.replacePrefix = newPrefix;
-                        Config.saveSettings();
-                        void this.plugin.getView()?.redraw();
-                    })
-            );
-
-        new Setting(containerEl)
-            .setName('Replace Suffix')
-            .setDesc('Text to place after each dangling link when replacing ]] suffix.')
-            .addText((text) =>
-                text
-                    .setPlaceholder('Suffix')
-                    .setValue(settings.replaceSuffix)
-                    .onChange((newSuffix) => {
-                        settings.replaceSuffix = newSuffix;
-                        Config.saveSettings();
-                        void this.plugin.getView()?.redraw();
-                    })
-            );
+    // Saves after a list mutation, then rebuilds the tab so the row changes
+    // are reflected. Reorders skip the rebuild: the framework already moved
+    // the rows.
+    private persist(rebuild: boolean): void {
+        Config.saveSettings();
+        void this.plugin.getView()?.redraw();
+        if (rebuild) {
+            this.update();
+        }
     }
 }
 
-class FolderSuggest extends AbstractInputSuggest<TFolder> {
-    private inputElRef: HTMLInputElement;
+class FolderPickerModal extends FuzzySuggestModal<TFolder> {
+    private readonly onPick: (folder: TFolder) => void;
 
-    constructor(app: App, inputEl: HTMLInputElement) {
-        super(app, inputEl);
-        this.inputElRef = inputEl;
+    constructor(app: App, onPick: (folder: TFolder) => void) {
+        super(app);
+        this.onPick = onPick;
+        this.setPlaceholder('Select a folder');
     }
 
-    protected getSuggestions(inputStr: string): TFolder[] {
-        const folders: TFolder[] = [];
-        const lowerCaseInputStr = inputStr.toLowerCase();
-
-        this.app.vault.getAllLoadedFiles().forEach((file: TAbstractFile) => {
-            if (
-                file instanceof TFolder &&
-                file.path.toLowerCase().includes(lowerCaseInputStr)
-            ) {
-                folders.push(file);
-            }
-        });
-
-        return folders;
+    getItems(): TFolder[] {
+        return this.app.vault
+            .getAllLoadedFiles()
+            .filter(
+                (file): file is TFolder =>
+                    file instanceof TFolder && file.path !== '/'
+            );
     }
 
-    renderSuggestion(folder: TFolder, el: HTMLElement): void {
-        el.setText(folder.path);
+    getItemText(folder: TFolder): string {
+        return folder.path;
     }
 
-    selectSuggestion(folder: TFolder, evt: MouseEvent | KeyboardEvent): void {
-        this.inputElRef.value = folder.path;
-        this.inputElRef.trigger('input');
-        this.close();
+    onChooseItem(folder: TFolder): void {
+        this.onPick(folder);
     }
 }
