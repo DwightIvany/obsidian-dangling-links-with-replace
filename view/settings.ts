@@ -82,20 +82,10 @@ export default class DanglingSettingsTab extends PluginSettingTab {
                 ],
             },
             {
-                type: 'group',
-                heading: 'Create files by template',
-                items: [
-                    {
-                        name: 'Create files using a template in same folder as the Dangling Links',
-                        searchable: false,
-                    },
-                ],
-            },
-            {
                 type: 'list',
-                heading: 'Template files',
+                heading: 'Create files by template',
                 emptyState:
-                    'No templates selected. Created files will be empty.',
+                    'Create files in same folder as the Dangling Links. No templates selected. Created files will be empty.',
                 addItem: {
                     name: 'Add template',
                     action: () => {
