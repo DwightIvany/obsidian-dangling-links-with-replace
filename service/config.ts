@@ -21,15 +21,12 @@ export namespace Config {
         replacePrefix: '`',
         replaceSuffix: '`'
     };
-    export async function loadSettings(plugin: Plugin) {
-        this.plugin = plugin;
-        this.settings = Object.assign(
-            {},
-            DEFAULT_SETTINGS,
-            await plugin.loadData()
-        );
+    export async function loadSettings(loadedPlugin: Plugin) {
+        plugin = loadedPlugin;
+        const loaded = (await loadedPlugin.loadData()) as Partial<DanglingSettings>;
+        settings = Object.assign({}, DEFAULT_SETTINGS, loaded);
     }
 
-    export function getSettings(): DanglingSettings { return this.settings; }
-    export function saveSettings(): void { this.plugin.saveData(this.settings); }
+    export function getSettings(): DanglingSettings { return settings; }
+    export function saveSettings(): void { void plugin.saveData(settings); }
 }

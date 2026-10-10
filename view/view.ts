@@ -55,7 +55,7 @@ export default class DanglingLinksView extends ItemView {
         let file = this.app.vault.getAbstractFileByPath(dangle.path);
         if (file instanceof TFile) {
             let leaf: WorkspaceLeaf = this.app.workspace.getUnpinnedLeaf();
-            leaf.openFile(file).then(() => {
+            void leaf.openFile(file).then(() => {
                 if (leaf.view instanceof MarkdownView) {
                     this.app.workspace.setActiveLeaf(leaf, true, true);
                     leaf.view.editor.setCursor(dangle.line, dangle.col);
