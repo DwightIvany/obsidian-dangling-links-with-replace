@@ -45,10 +45,3 @@ This plugin enumerates the files in your vault (`vault.getMarkdownFiles`)
 to find dangling links, and reads a file only when you ask it to replace
 a link in it. Everything runs locally inside Obsidian — no file contents
 or paths are ever sent anywhere.
-
-## Compatibility
-
-I've marked this as requiring obsidian v1.0.0 because it once worked on it. If
-you get it working on an earlier one, I'm happy to change that number. I don't
-have a lot of time to spend testing versions though and I don't see a big reason
-to stick with old versions.
