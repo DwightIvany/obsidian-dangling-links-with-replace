@@ -1,7 +1,7 @@
 import Dangling from './Dangling.svelte';
 import { NAVIGATION_TAB, VIEW_TYPE_DANGLING_LINKS } from '../constants';
 import type Dangle from '../model/dangle';
-import { ItemView, MarkdownView, Notice, TFile, WorkspaceLeaf } from 'obsidian';
+import { App, FuzzySuggestModal, ItemView, MarkdownView, Notice, TFile, WorkspaceLeaf } from 'obsidian';
 import { Config } from '../service/config';
 import type DanglingNavigationItem from 'controller/navigationItem';
 import type { Sortable } from 'controller/navigationItem';
@@ -128,22 +128,35 @@ export default class DanglingLinksView extends ItemView {
     }
 
     // Create one file per dangling link, in the folder of the file that
-    // contains the link, filled with the template selected in settings.
-    // Existing files and duplicate link targets are skipped.
-    public async createFilesFromTemplate(): Promise<void> {
-        let settings = Config.getSettings();
-        let templatePath = settings.templateFile;
-        if (!templatePath) {
-            new Notice('Select a template file in the plugin settings first.');
+    // contains the link. Content comes from the single configured template,
+    // from a template the user picks when several are configured, or is
+    // empty when no template is configured.
+    public createFilesFromTemplate(): void {
+        let templates = Config.getSettings().templateFiles;
+        if (templates.length == 0) {
+            void this.createDangleFiles('');
             return;
         }
+        if (templates.length == 1) {
+            void this.createWithTemplate(templates[0]);
+            return;
+        }
+        new TemplateSelectModal(this.app, templates, (template) => {
+            void this.createWithTemplate(template);
+        }).open();
+    }
+
+    private async createWithTemplate(templatePath: string): Promise<void> {
         let templateFile = this.app.vault.getAbstractFileByPath(templatePath);
         if (!(templateFile instanceof TFile)) {
             new Notice('Template file not found: ' + templatePath);
             return;
         }
         let content = await this.app.vault.read(templateFile);
+        await this.createDangleFiles(content);
+    }
 
+    private async createDangleFiles(content: string): Promise<void> {
         let linkItem = this.sortableItems.find(
             (element) => element.tabIdentifier == NAVIGATION_TAB.LINK
         );
@@ -216,5 +229,35 @@ export default class DanglingLinksView extends ItemView {
             (element) => element.tabIdentifier == settings.selectedTab
         );
         return activeNavigation.sort(activeNavigation.getDanglingLinks());
+    }
+}
+
+// Shown when the user clicks Create Files with more than one template
+// configured, so they can pick which template to create files from.
+class TemplateSelectModal extends FuzzySuggestModal<string> {
+    private readonly templates: string[];
+    private readonly onChoose: (template: string) => void;
+
+    constructor(
+        app: App,
+        templates: string[],
+        onChoose: (template: string) => void
+    ) {
+        super(app);
+        this.templates = templates;
+        this.onChoose = onChoose;
+        this.setPlaceholder('Select a template');
+    }
+
+    getItems(): string[] {
+        return this.templates;
+    }
+
+    getItemText(template: string): string {
+        return template;
+    }
+
+    onChooseItem(template: string): void {
+        this.onChoose(template);
     }
 }

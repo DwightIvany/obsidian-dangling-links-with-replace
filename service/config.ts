@@ -8,7 +8,7 @@ export interface DanglingSettings {
     ignoredFolders: string[];
     replacePrefix: string;
     replaceSuffix: string;
-    templateFile: string;
+    templateFiles: string[];
 }
 
 let plugin: Plugin;
@@ -21,13 +21,21 @@ const DEFAULT_SETTINGS : DanglingSettings = {
     ignoredFolders: [],
     replacePrefix: '`',
     replaceSuffix: '`',
-    templateFile: ''
+    templateFiles: []
 };
 
 async function loadSettings(loadedPlugin: Plugin): Promise<void> {
     plugin = loadedPlugin;
-    const loaded = (await loadedPlugin.loadData()) as Partial<DanglingSettings>;
+    const loaded = (await loadedPlugin.loadData()) as Partial<DanglingSettings> & {
+        templateFile?: string;
+    };
     settings = Object.assign({}, DEFAULT_SETTINGS, loaded);
+    if (!Array.isArray(settings.templateFiles)) {
+        settings.templateFiles = loaded.templateFile
+            ? [loaded.templateFile]
+            : [];
+    }
+    delete (settings as { templateFile?: string }).templateFile;
 }
 
 function getSettings(): DanglingSettings { return settings; }
