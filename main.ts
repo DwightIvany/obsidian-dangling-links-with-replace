@@ -30,7 +30,7 @@ export default class DanglingLinkPlugin extends Plugin {
     }
 
     showPanel() {
-        this.app.workspace
+        void this.app.workspace
             .getRightLeaf(true)
             .setViewState({ type: VIEW_TYPE_DANGLING_LINKS });
     }

@@ -88,13 +88,11 @@ export abstract class Sortable extends DanglingNavigationItem {
         dangles.forEach((dangle) => {
             let index = indexer(dangle);
             //index = index == '' ? this.app.vault.getName() : index;
-            if (danglingLinks.has(index)) {
-                var dangles = [...danglingLinks.get(index), dangle];
-            } else {
-                var dangles = [dangle];
-            }
-            // con.log(`adding ${dangles.length} dangling links with replace for ${file.path}`);
-            danglingLinks.set(index, dangles);
+            const grouped = danglingLinks.has(index)
+                ? [...danglingLinks.get(index), dangle]
+                : [dangle];
+            // con.log(`adding ${grouped.length} dangling links with replace for ${file.path}`);
+            danglingLinks.set(index, grouped);
         });
         return danglingLinks;
     }
